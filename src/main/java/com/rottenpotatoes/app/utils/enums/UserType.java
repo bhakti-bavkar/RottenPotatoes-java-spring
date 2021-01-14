@@ -27,6 +27,6 @@ public enum UserType {
             }
         }
         throw new IllegalArgumentException("UserType enum value: " + value
-                    + " does not match with existing values");
+                    + " does not match with applicable enum values");
     }
 }

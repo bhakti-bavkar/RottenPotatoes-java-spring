@@ -1,18 +1,12 @@
 package com.rottenpotatoes.app.controller;
 
-import com.rottenpotatoes.app.errors.EntityNotFoundException;
-import com.rottenpotatoes.app.errors.InvalidInputException;
+import com.rottenpotatoes.app.errors.exceptions.EntityNotFoundException;
 import com.rottenpotatoes.app.model.Movie;
 import com.rottenpotatoes.app.services.MovieService;
-import com.rottenpotatoes.app.utils.enums.Ratings;
 import com.rottenpotatoes.app.utils.enums.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,13 +16,16 @@ public class MoviesController{
     MovieService movieService;
 
     @GetMapping(produces = "application/json")
-    public List<Movie> getMovies(@RequestParam(value="name",required = false) String name,
-                                 @RequestParam(value="usertype",required = false) String userType)
+    public List<Movie> getMovies(@RequestParam(value="name", required = false) String name,
+                                 @RequestParam(value="usertype", required = false) String userType,
+                                 @RequestParam(value="ratings", required = false)String[] ratings)
     throws EntityNotFoundException{
         if(name != null)
-            return movieService.findMovieByName(name);
+            return movieService.findMoviesByName(name);
         if(userType != null)
             return movieService.findMoviesByUserType(UserType.fromValue(userType));
+        if(ratings != null)
+            return movieService.findMoviesByRatings(ratings);
         return movieService.findAllMovies();
     }
 

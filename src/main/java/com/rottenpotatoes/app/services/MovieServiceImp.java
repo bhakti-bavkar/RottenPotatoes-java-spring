@@ -1,7 +1,7 @@
 package com.rottenpotatoes.app.services;
 
 
-import com.rottenpotatoes.app.errors.EntityNotFoundException;
+import com.rottenpotatoes.app.errors.exceptions.EntityNotFoundException;
 import com.rottenpotatoes.app.utils.enums.*;
 import com.rottenpotatoes.app.model.Movie;
 import com.rottenpotatoes.app.repository.MovieRepository;
@@ -9,9 +9,6 @@ import com.rottenpotatoes.app.utils.enums.Ratings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.rottenpotatoes.app.utils.Constants.*;
-
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -69,10 +66,19 @@ public class MovieServiceImp implements MovieService{
     }
 
     @Override
-    public List<Movie> findMovieByName(String name){
+    public List<Movie> findMoviesByName(String name){
         List<Movie> movies = movieRepository.findMovieByName(name);
         if(movies == null){
             throw new EntityNotFoundException(Movie.class, "name", name);
+        }
+        return movies;
+    }
+
+    @Override
+    public List<Movie> findMoviesByRatings(String[] ratings){
+        List<Movie> movies = movieRepository.findMoviesByRatings(ratings);
+        if(movies == null){
+            throw new EntityNotFoundException(Movie.class, "Movies with given Ratings not found");
         }
         return movies;
     }

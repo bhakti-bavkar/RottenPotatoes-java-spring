@@ -18,5 +18,7 @@ public interface MovieService {
 
     List<Movie> findMoviesByUserType(UserType userType);
 
-    List<Movie> findMovieByName(String name);
+    List<Movie> findMoviesByName(String name);
+
+    List<Movie> findMoviesByRatings(String[] ratings);
 }
