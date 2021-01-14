@@ -16,10 +16,10 @@ public interface MovieRepository extends MongoRepository<Movie, String> {
     @Query("{id : ?0}")
     Movie findMovieById(String id);
 
-    @Query("{'name' : ?0}")
+    @Query("{'name' : { $regex: ?0,  $options: 'i', $ne : null}}")
     List<Movie> findMovieByName(String name);
 
-    @Query("'ratings' : {$in: ?0}")
-    List<Movie> findMoviesByRatings(List<Ratings> ratings);
+    @Query("{ratings: {$in: ?0}}")
+    List<Movie> findMoviesByRatings(String[] ratings);
 
 }

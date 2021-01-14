@@ -19,13 +19,14 @@ public enum UserType {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static UserType fromValue(String value) throws Exception {
-        if (value != null) {
+    public static UserType fromValue(String value) {
+        if (value != null){
             for (UserType type : values()) {
                 if (type.value.equals(value))
                     return type;
             }
         }
-        throw new Exception("Given UserType " + value + " not found in enum");
+        throw new IllegalArgumentException("UserType enum value: " + value
+                    + " does not match with existing values");
     }
 }

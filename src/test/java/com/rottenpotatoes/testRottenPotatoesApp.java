@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class testRottenPotatoesApp{
 
     @Test
-    public void test_appStart_Successfully(){
+    public void test_appStart_successfully(){
 
     }
 

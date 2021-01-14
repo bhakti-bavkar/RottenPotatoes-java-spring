@@ -31,7 +31,7 @@ public class MovieServiceImp implements MovieService{
     @Override
     public List<Movie> findAllMovies(){
         List<Movie> movies = movieRepository.findAll();
-        if(movies == null){
+        if(movies == null || movies.isEmpty()){
             throw new EntityNotFoundException(Movie.class, "No Data");
         }
         return movies;
@@ -59,7 +59,7 @@ public class MovieServiceImp implements MovieService{
 
     @Override
     public List<Movie> findMoviesByUserType(UserType userType){
-        List<Ratings> allowedRatings = getEligibleRatings(userType);
+        String[] allowedRatings = getEligibleRatings(userType);
 
         List<Movie> movies = movieRepository.findMoviesByRatings(allowedRatings);
         if(movies == null){
@@ -77,18 +77,23 @@ public class MovieServiceImp implements MovieService{
         return movies;
     }
 
-    private List<Ratings> getEligibleRatings(UserType userType){
-        List<Ratings> eligibleRatings;
+    private String[] getEligibleRatings(UserType userType){
+        String[] eligibleRatings;
         switch (userType){
             case CHILD:
-                eligibleRatings = Arrays.asList(Ratings.PG, Ratings.G);
+                eligibleRatings = new String[]{
+                        Ratings.PG.toString(),
+                        Ratings.G.toString()};
                 break;
             case TEEN:
-                eligibleRatings = Arrays.asList(Ratings.PG, Ratings.PG_13, Ratings.G);
+                eligibleRatings = new String[]{
+                        Ratings.PG.toString(),
+                        Ratings.PG_13.toString(),
+                        Ratings.G.toString()};
                 break;
             case ADULT:
             default:
-                eligibleRatings = Arrays.asList(Ratings.values());
+                eligibleRatings = Ratings.toStrArray();
                 break;
         }
         return eligibleRatings;

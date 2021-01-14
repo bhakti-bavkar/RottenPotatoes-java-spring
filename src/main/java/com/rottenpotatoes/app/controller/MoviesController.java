@@ -22,10 +22,13 @@ public class MoviesController{
     MovieService movieService;
 
     @GetMapping(produces = "application/json")
-    public List<Movie> getMovies(@RequestParam(value="name",required = false) String name)
+    public List<Movie> getMovies(@RequestParam(value="name",required = false) String name,
+                                 @RequestParam(value="usertype",required = false) String userType)
     throws EntityNotFoundException{
         if(name != null)
             return movieService.findMovieByName(name);
+        if(userType != null)
+            return movieService.findMoviesByUserType(UserType.fromValue(userType));
         return movieService.findAllMovies();
     }
 
