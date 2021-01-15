@@ -2,6 +2,8 @@ package com.rottenpotatoes.app.errors;
 
 import com.rottenpotatoes.app.errors.exceptions.EntityNotFoundException;
 import com.rottenpotatoes.app.errors.exceptions.InvalidInputException;
+import com.rottenpotatoes.app.errors.exceptions.ValidationErrorResponse;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -47,26 +49,26 @@ public class RESTExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new BaseErrorResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, builder.substring(0, builder.length() - 2), ex));
     }
 
-    /*Triggered when an object fails @Valid validation.
+    /*Triggered when an object fails @Valid validation.*/
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             HttpHeaders headers,
             HttpStatus status,
             WebRequest request) {
-        BaseErrorResponse apiError = new BaseErrorResponse(BAD_REQUEST);
-        apiError.setMessage("Validation error");
-        apiError.setDebugMessage(ex.getMessage());
-//        apiError.addValidationErrors(ex.getBindingResult().getFieldErrors());
-//        apiError.addValidationError(ex.getBindingResult().getGlobalErrors());
-        return buildResponseEntity(apiError);
-    }*/
+        ValidationErrorResponse validationError = new ValidationErrorResponse(BAD_REQUEST,
+                "Validation Error", ex);
+        validationError.setDebugMessage(ex.getMessage());
+        validationError.addViolation(ex.getBindingResult().getFieldErrors());
+        //validationError.addViolation(ex.getBindingResult().getGlobalErrors());
+        return buildResponseEntity(validationError);
+    }
 
     /*triggered when request JSON is malformed.*/
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-//        ServletWebRequest servletWebRequest = (ServletWebRequest) request;
-//        log.info("{} to {}", servletWebRequest.getHttpMethod(), servletWebRequest.getRequest().getServletPath());
+        //ServletWebRequest servletWebRequest = (ServletWebRequest) request;
+        //log.info("{} to {}", servletWebRequest.getHttpMethod(), servletWebRequest.getRequest().getServletPath());
            String error = "Malformed JSON request";
         return buildResponseEntity(new BaseErrorResponse(HttpStatus.BAD_REQUEST, error, ex));
     }
@@ -86,6 +88,18 @@ public class RESTExceptionHandler extends ResponseEntityExceptionHandler {
         apiError.setMessage(String.format("The parameter '%s' of value '%s' could not be converted to type '%s'", ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName()));
         apiError.setDebugMessage(ex.getMessage());
         return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        ValidationErrorResponse validationError = new ValidationErrorResponse(BAD_REQUEST);
+        validationError.setMessage("Constraint violation: " + ex.getConstraintName());
+        validationError.setDebugMessage(ex.getMessage());
+        /*For multiple constraint violations
+        for (ConstraintViolation violation : ex.getConstraintViolations()) {
+            validationError.addViolation(violation.getPropertyPath().toString(), violation.getMessage());
+        }*/
+        return buildResponseEntity(validationError);
     }
 
     private ResponseEntity<Object> buildResponseEntity(BaseErrorResponse errorResponse) {
