@@ -12,6 +12,7 @@ public class Movie extends BaseData{
     private String name;
 
     private String director;
+
     private String releaseDate;
     private String ratings;
 

@@ -3,7 +3,6 @@ package com.rottenpotatoes.app.errors;
 import com.rottenpotatoes.app.errors.exceptions.EntityNotFoundException;
 import com.rottenpotatoes.app.errors.exceptions.InvalidInputException;
 import com.rottenpotatoes.app.errors.exceptions.ValidationErrorResponse;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -90,17 +89,18 @@ public class RESTExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+    /* triggered on JDBC Constraint Violation
     @ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
         ValidationErrorResponse validationError = new ValidationErrorResponse(BAD_REQUEST);
         validationError.setMessage("Constraint violation: " + ex.getConstraintName());
         validationError.setDebugMessage(ex.getMessage());
-        /*For multiple constraint violations
-        for (ConstraintViolation violation : ex.getConstraintViolations()) {
-            validationError.addViolation(violation.getPropertyPath().toString(), violation.getMessage());
-        }*/
+        //For multiple constraint violations
+        //for (ConstraintViolation violation : ex.getConstraintViolations()) {
+        //    validationError.addViolation(violation.getPropertyPath().toString(), violation.getMessage());
+        //}
         return buildResponseEntity(validationError);
-    }
+    }*/
 
     private ResponseEntity<Object> buildResponseEntity(BaseErrorResponse errorResponse) {
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
