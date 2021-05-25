@@ -63,5 +63,8 @@ public class ValidationErrorResponse extends BaseErrorResponse {
             this.fieldName = fieldName;
             this.message = message;
         }
+
+        public String getMessage(){return this.message;}
+        public String getFieldName(){return this.fieldName;}
     }
 }

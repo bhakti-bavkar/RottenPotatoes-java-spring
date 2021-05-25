@@ -102,6 +102,8 @@ public class RESTExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(validationError);
     }*/
 
+
+
     private ResponseEntity<Object> buildResponseEntity(BaseErrorResponse errorResponse) {
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }

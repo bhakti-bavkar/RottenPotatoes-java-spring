@@ -5,12 +5,18 @@ import com.rottenpotatoes.app.model.Movie;
 import com.rottenpotatoes.app.services.MovieService;
 import com.rottenpotatoes.app.utils.enums.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/movies")
+@Validated
 public class MoviesController{
     @Autowired
     MovieService movieService;
@@ -31,24 +37,24 @@ public class MoviesController{
 
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public Movie movieById(@PathVariable String id) throws EntityNotFoundException {
+    public Movie movieById(@NotNull @NotEmpty @PathVariable String id) throws EntityNotFoundException {
         return movieService.findMovieById(id);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public Movie createMovie(@RequestBody Movie movie){
+    public Movie createMovie(@Valid @RequestBody Movie movie){
         movieService.addNewMovie(movie);
         return movie;
     }
 
     @PutMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
-    public Movie updateMovie(@RequestBody Movie movie, @PathVariable String id){
+    public Movie updateMovie(@Valid @RequestBody Movie movie, @NotNull @NotEmpty @PathVariable String id){
         movieService.updateMovie(movie, id);
         return movie;
     }
 
     @DeleteMapping("/{id}")
-    public String deleteMovie(@PathVariable String id){
+    public String deleteMovie(@NotNull @NotEmpty @PathVariable String id){
         movieService.deleteMovieById(id);
         return "Successfully deleted Movie with id: " + id;
     }

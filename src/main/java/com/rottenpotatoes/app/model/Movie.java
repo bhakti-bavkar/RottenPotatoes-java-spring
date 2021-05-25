@@ -5,15 +5,24 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 
 @Document("movies")
 public class Movie extends BaseData{
     @Indexed(name="movieName")
+    @NotNull
+    @NotEmpty
     private String name;
 
     private String director;
 
     private String releaseDate;
+
+    @NotNull
+    @NotEmpty
     private String ratings;
 
     public String getName(){
@@ -27,7 +36,7 @@ public class Movie extends BaseData{
     }
 
     @Transient
-    public Ratings getRating() throws Exception {
+    public Ratings getRatings() throws Exception {
         return Ratings.fromValue(ratings);
     }
 
@@ -40,8 +49,8 @@ public class Movie extends BaseData{
     public void setReleaseDate(String releaseDate){
         this.releaseDate = releaseDate;
     }
-    public void setRating(Ratings rating){
-        this.ratings = rating.getValue();
+    public void setRatings(Ratings ratings){
+        this.ratings = ratings.getValue();
     }
 
 }

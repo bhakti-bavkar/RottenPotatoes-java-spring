@@ -29,7 +29,7 @@ public class MovieServiceImp implements MovieService{
     public List<Movie> findAllMovies(){
         List<Movie> movies = movieRepository.findAll();
         if(movies == null || movies.isEmpty()){
-            throw new EntityNotFoundException(Movie.class, "No Data");
+            throw new EntityNotFoundException(Movie.class, "movies", "DB Collection is empty");
         }
         return movies;
     }
@@ -78,7 +78,7 @@ public class MovieServiceImp implements MovieService{
     public List<Movie> findMoviesByRatings(String[] ratings){
         List<Movie> movies = movieRepository.findMoviesByRatings(ratings);
         if(movies == null){
-            throw new EntityNotFoundException(Movie.class, "Movies with given Ratings not found");
+            throw new EntityNotFoundException(Movie.class, "ratings", ratings.toString());
         }
         return movies;
     }
